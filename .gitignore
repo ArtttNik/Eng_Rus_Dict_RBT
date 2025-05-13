@@ -1,0 +1,38 @@
+# Prerequisites
+*.d
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+*.smod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+/A&DS/.idea
+/A&DS/cmake-build-debug
+cmake-build-debug/CMakeFiles/clion-Debug-log.txt
+A&DS/New_Project.cdproj
+/TP/.idea
+/TP/cmake-build-debug
