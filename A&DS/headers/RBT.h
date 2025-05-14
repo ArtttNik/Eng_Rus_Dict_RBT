@@ -58,4 +58,7 @@ public:
     static void makeTreeToStringRecursive(const Node* node, const std::string& prefix, bool isTail, std::string& result);
 };
 
+bool isEnglishWord(const std::string& word);
+bool isRussianWord(const std::string& word);
+
 #endif //RBT_H

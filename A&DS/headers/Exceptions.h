@@ -161,4 +161,11 @@ public:
     const char* what() const noexcept override { return "Program exit requested"; }
 };
 
+class InvalidFile final : public std::runtime_error {
+public:
+    InvalidFile()
+        : std::runtime_error("ERROR: Something wrong with file.\n") {
+    }
+};
+
 #endif //EXCEPTIONS_H

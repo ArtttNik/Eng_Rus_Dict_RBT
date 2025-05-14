@@ -158,11 +158,11 @@ bool MyJsonIterator::operator!=(const MyJsonIterator& other) const {
     return index_ != other.index_;
 }
 
-std::string MyJsonIterator::getKey() const {
+std::string MyJsonIterator::getWord() const {
     return json_->getEntry(index_).key;
 }
 
-MyJsonArray MyJsonIterator::getValue() const {
+MyJsonArray MyJsonIterator::getArrayOfTr() const {
     const auto& entry = json_->getEntry(index_);
     return MyJsonArray(entry.translations, entry.translationsCount);
 }

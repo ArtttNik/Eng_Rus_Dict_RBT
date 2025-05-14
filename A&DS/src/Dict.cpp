@@ -443,44 +443,6 @@ void Dict::run() {
     }
 }
 
-bool isEnglishWord(const std::string& word) {
-    for (const unsigned char c: word) {
-        if (!((c >= 'A' && c <= 'Z') ||
-              (c >= 'a' && c <= 'z') ||
-              c == '\'' || c == '-' ||
-              c == ',' || c == ' ')) {
-            return false;
-        }
-    }
-    return true;
-}
-
-bool isRussianWord(const std::string& word) {
-    for (size_t i = 0; i < word.size();) {
-        const unsigned char c = word[i];
-
-        if (c == ' ' || c == ',') {
-            i++;
-            continue;
-        }
-
-        if ((c == 0xD0 || c == 0xD1) && i + 1 < word.size()) {
-            const unsigned char next = word[i + 1];
-
-            const bool isRussian = (c == 0xD0 && next >= 0x90 && next <= 0xBF) ||
-                             (c == 0xD1 && next >= 0x80 && next <= 0x8F) ||
-                             (c == 0xD0 && next == 0x81) ||
-                             (c == 0xD1 && next == 0x91);
-
-            if (!isRussian) return false;
-            i += 2;
-        } else {
-            return false;
-        }
-    }
-    return !word.empty();
-}
-
 void toUpperCaseE(std::string& str) {
     for (char& c : str)
         if (c >= 'a' && c <= 'z')

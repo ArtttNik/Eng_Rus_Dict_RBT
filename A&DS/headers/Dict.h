@@ -35,9 +35,6 @@ public:
     void run();
 };
 
-bool isEnglishWord(const std::string& word);
-bool isRussianWord(const std::string& word);
-
 void toUpperCaseE(std::string& str);
 void trimSpaces(std::string& str);
 void toLowerCaseE(std::string& str);

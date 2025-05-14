@@ -1,4 +1,6 @@
 #include "../headers/RBT.h"
+
+#include "../headers/Dict.h"
 #include "../headers/Exceptions.h"
 #include "../headers/MyJson.h"
 
@@ -61,12 +63,18 @@ void RBT::loadFromFile(const std::string& filename) {
     dict.parse(content);
 
     for (auto it = dict.begin(); it != dict.end(); ++it) {
-        const std::string& word = it.getKey();
-        MyJsonArray translationsArray = it.getValue();
+        const std::string& word = it.getWord();
+        if (!isEnglishWord(word))
+            throw InvalidFile();
+        MyJsonArray translationsArray = it.getArrayOfTr();
 
         List translations;
-        for (auto tr = translationsArray.begin(); tr != translationsArray.end(); ++tr)
+        for (auto tr = translationsArray.begin(); tr != translationsArray.end(); ++tr) {
+            if (!isRussianWord(tr.getValue()))
+                throw InvalidFile();
             translations.push(tr.getValue());
+        }
+
 
         insert(Pair(word, translations));
     }
@@ -401,4 +409,42 @@ void RBT::makeTreeToStringRecursive(const Node* node, const std::string& prefix,
         if (node->right_)
             makeTreeToStringRecursive(node->right_, newPrefix, true, result);
     }
+}
+
+bool isEnglishWord(const std::string& word) {
+    for (const unsigned char c: word) {
+        if (!((c >= 'A' && c <= 'Z') ||
+              (c >= 'a' && c <= 'z') ||
+              c == '\'' || c == '-' ||
+              c == ',' || c == ' ')) {
+            return false;
+              }
+    }
+    return true;
+}
+
+bool isRussianWord(const std::string& word) {
+    for (size_t i = 0; i < word.size();) {
+        const unsigned char c = word[i];
+
+        if (c == ' ' || c == ',') {
+            i++;
+            continue;
+        }
+
+        if ((c == 0xD0 || c == 0xD1) && i + 1 < word.size()) {
+            const unsigned char next = word[i + 1];
+
+            const bool isRussian = (c == 0xD0 && next >= 0x90 && next <= 0xBF) ||
+                             (c == 0xD1 && next >= 0x80 && next <= 0x8F) ||
+                             (c == 0xD0 && next == 0x81) ||
+                             (c == 0xD1 && next == 0x91);
+
+            if (!isRussian) return false;
+            i += 2;
+        } else {
+            return false;
+        }
+    }
+    return !word.empty();
 }

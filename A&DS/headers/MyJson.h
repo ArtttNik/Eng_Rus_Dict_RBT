@@ -68,8 +68,8 @@ public:
     MyJsonIterator(const MyJson* json, size_t index);
     MyJsonIterator& operator++();
     bool operator!=(const MyJsonIterator& other) const;
-    std::string getKey() const;
-    MyJsonArray getValue() const;
+    std::string getWord() const;
+    MyJsonArray getArrayOfTr() const;
 
 private:
     const MyJson* json_;
