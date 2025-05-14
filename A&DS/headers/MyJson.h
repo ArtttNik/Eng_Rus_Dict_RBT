@@ -8,7 +8,7 @@ public:
     MyJsonArrayIterator(const std::string* data, size_t index);
     MyJsonArrayIterator& operator++();
     bool operator!=(const MyJsonArrayIterator& other) const;
-    std::string value() const;
+    std::string getValue() const;
 
 private:
     const std::string* data_;
@@ -56,7 +56,7 @@ public:
 private:
     static void skipWhitespace(const std::string& text, size_t& pos);
     static std::string parseString(const std::string& text, size_t& pos);
-    void grow();
+    void enlarge();
 
     Entry* entries_;
     size_t size_;
@@ -68,8 +68,8 @@ public:
     MyJsonIterator(const MyJson* json, size_t index);
     MyJsonIterator& operator++();
     bool operator!=(const MyJsonIterator& other) const;
-    std::string key() const;
-    MyJsonArray value() const;
+    std::string getKey() const;
+    MyJsonArray getValue() const;
 
 private:
     const MyJson* json_;

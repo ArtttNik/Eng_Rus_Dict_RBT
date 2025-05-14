@@ -169,30 +169,21 @@ void Dict::insert(std::string& word, std::string& translationsStr) {
 
     List listTranslations;
     size_t start = 0;
-    size_t end = translationsStr.find(';');
 
-    while (end != std::string::npos) {
-        std::string translation = translationsStr.substr(start, end - start);
-        trimSpaces(translation);
-        if (!translation.empty()) {
-            if (!isRussianWord(translation))
-                throw InvalidTranslationLanguage();
+    for (size_t end = 0; end <= translationsStr.size(); ++end) {
+        if (end == translationsStr.size() || translationsStr[end] == ';') {
+            std::string translation = translationsStr.substr(start, end - start);
+            trimSpaces(translation);
 
-            toLowerCaseR(translation);
-            listTranslations.push(translation);
+            if (!translation.empty()) {
+                if (!isRussianWord(translation))
+                    throw InvalidTranslationLanguage();
+
+                toLowerCaseR(translation);
+                listTranslations.push(translation);
+            }
+            start = end + 1;
         }
-        start = end + 1;
-        end = translationsStr.find(';', start);
-    }
-
-    std::string lastTranslation = translationsStr.substr(start);
-    trimSpaces(lastTranslation);
-    if (!lastTranslation.empty()) {
-        if (!isRussianWord(lastTranslation))
-            throw InvalidTranslationLanguage();
-
-        toLowerCaseR(lastTranslation);
-        listTranslations.push(lastTranslation);
     }
 
     if (listTranslations.isEmpty())
@@ -219,7 +210,7 @@ void Dict::addTranslation(const std::string& word, const std::string& newTransla
 }
 
 void Dict::removeTranslation(const std::string& word, const std::string& translation) {
-    Node* node = RBT::search(tree_.getRoot(), word);
+    Node* node = tree_.search(tree_.getRoot(), word);
     if (!node)
         throw NodeNotFound();
 
@@ -240,8 +231,8 @@ void Dict::removeTranslation(const std::string& word, const std::string& transla
     }
 }
 
-List &Dict::findTranslationByWord(const std::string& word) const {
-    Node* node = RBT::search(tree_.getRoot(), word);
+List& Dict::findTranslationByWord(const std::string& word) const {
+    Node* node = tree_.search(tree_.getRoot(), word);
 
     if (node == nullptr)
         throw NoFoundWord();
@@ -262,7 +253,7 @@ std::string Dict::findWordByTranslation(const std::string& translation) const {
     return result->data_.word_;
 }
 
-Node *Dict::findInTreeByTranslation(Node* node, const std::string& translation) {
+Node* Dict::findInTreeByTranslation(Node* node, const std::string& translation) {
     if (!node)
         return nullptr;
 
@@ -442,10 +433,10 @@ void Dict::run() {
             } else {
                 std::cout << "Неизвестная команда. Попробуйте снова.\n";
             }
-        } catch (const std::logic_error& e) {
-            std::cout << e.what() << "\nПопробуйте снова.\n\n";
-        } catch (const std::runtime_error& e) {
-            std::cerr << e.what();
+        } catch (const std::logic_error& error) {
+            std::cout << error.what() << "\nПопробуйте снова.\n\n";
+        } catch (const std::runtime_error& error) {
+            std::cerr << error.what();
             std::cout << "Ошибка критическая, завершение работы!!!\n";
             exit(EXIT_FAILURE);
         }

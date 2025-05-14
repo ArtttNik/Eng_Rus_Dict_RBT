@@ -38,20 +38,20 @@ void runProgram() {
                 runForTests();
             } else if (command == "USER" || command == "2") {
                 runForUser();
-            } else if (command == "EXIT") {
-                return;
+            } else if (command == "EXIT" || command == "3") {
+                break;
             } else {
                 std::cout << "Неизвестная команда, попробуйте ещё раз\n";
                 std::cout << "Ваш выбор:   ";
             }
         } catch (const ProgramExit&) {
-            return;
-        } catch (const FailOfMemoryAllocation& e) {
-            std::cerr << "Memory allocation failed: " << e.what() << "\n";
-            return;
+            break;
+        } catch (const FailOfMemoryAllocation& error) {
+            std::cerr << error.what() << "\n";
+            break;
         } catch (const std::exception& error) {
             std::cerr << error.what() << "\n";
-            return;
+            break;
         }
     }
 }

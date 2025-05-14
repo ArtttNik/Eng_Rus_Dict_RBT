@@ -26,11 +26,7 @@ void List::clear() {
     size_ = 0;
 }
 
-List::List() {
-    head_ = nullptr;
-    tail_ = nullptr;
-    size_ = 0;
-}
+List::List() : head_(nullptr), tail_(nullptr), size_(0) {}
 
 List::~List() {
     clear();
@@ -66,14 +62,6 @@ void List::push(const std::string& value) {
         throw EmptyValue();
     }
 
-    NodeList* check = head_;
-    while (check != nullptr) {
-        if (check->value_ == value) {
-            throw DuplicateTranslation();
-        }
-        check = check->next_;
-    }
-
     NodeList* newNode = nullptr;
     try {
         newNode = new NodeList(value);
@@ -81,28 +69,31 @@ void List::push(const std::string& value) {
         throw FailOfMemoryAllocation("NodeList");
     }
 
-    if (head_ == nullptr) {
+    if (head_ == nullptr)
         head_ = tail_ = newNode;
-    }
     else if (value < head_->value_) {
         newNode->next_ = head_;
         head_ = newNode;
-    }
-    else if (tail_ != nullptr && value > tail_->value_) {
+    } else if (value > tail_->value_ && value > tail_->value_) {
         tail_->next_ = newNode;
         tail_ = newNode;
-    }
-    else {
+    } else {
         NodeList* current = head_;
         while (current->next_ != nullptr && current->next_->value_ < value) {
+            if (current->value_ == value) {
+                delete newNode;
+                throw DuplicateTranslation();
+            }
             current = current->next_;
+        }
+        if (current->value_ == value || (current->next_ != nullptr && current->next_->value_ == value)) {
+            delete newNode;
+            throw DuplicateTranslation();
         }
         newNode->next_ = current->next_;
         current->next_ = newNode;
-
-        if (newNode->next_ == nullptr) {
+        if (newNode->next_ == nullptr)
             tail_ = newNode;
-        }
     }
 
     ++size_;
@@ -143,8 +134,8 @@ void List::remove(NodeList* nodeToRemove) {
 }
 
 std::string List::convertTranslationsToString() const {
-    std::string result;
-    const NodeList* current = head_;
+    std::string result = "";
+    NodeList* current = head_;
 
     while (current) {
         if (current->value_.empty()) {

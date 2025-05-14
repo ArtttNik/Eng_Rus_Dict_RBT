@@ -32,14 +32,17 @@ bool MyJsonArrayIterator::operator!=(const MyJsonArrayIterator& other) const {
     return index_ != other.index_;
 }
 
-std::string MyJsonArrayIterator::value() const {
+std::string MyJsonArrayIterator::getValue() const {
     return data_[index_];
 }
 
 MyJsonArray::MyJsonArray(const std::string* data, size_t size)
     : data_(data), size_(size) {}
 
-MyJson::Entry::Entry() : translations(new std::string[32]), translationsCount(0) {}
+MyJson::Entry::Entry() {
+    translations = new std::string[32];
+    translationsCount = 0;
+}
 
 MyJson::Entry::~Entry() {
     delete[] translations;
@@ -73,7 +76,7 @@ MyJson::~MyJson() {
     delete[] entries_;
 }
 
-void MyJson::grow() {
+void MyJson::enlarge() {
     capacity_ *= 2;
     auto* newEntries = new Entry[capacity_];
     for (size_t i = 0; i < size_; ++i)
@@ -107,7 +110,7 @@ void MyJson::parse(const std::string& text) {
         ++pos;
 
         if (size_ >= capacity_)
-            grow();
+            enlarge();
 
         entries_[size_].key = key;
         entries_[size_].translationsCount = 0;
@@ -155,11 +158,11 @@ bool MyJsonIterator::operator!=(const MyJsonIterator& other) const {
     return index_ != other.index_;
 }
 
-std::string MyJsonIterator::key() const {
+std::string MyJsonIterator::getKey() const {
     return json_->getEntry(index_).key;
 }
 
-MyJsonArray MyJsonIterator::value() const {
+MyJsonArray MyJsonIterator::getValue() const {
     const auto& entry = json_->getEntry(index_);
     return MyJsonArray(entry.translations, entry.translationsCount);
 }

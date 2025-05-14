@@ -61,12 +61,12 @@ void RBT::loadFromFile(const std::string& filename) {
     dict.parse(content);
 
     for (auto it = dict.begin(); it != dict.end(); ++it) {
-        const std::string& word = it.key();
-        MyJsonArray translationsArray = it.value();
+        const std::string& word = it.getKey();
+        MyJsonArray translationsArray = it.getValue();
 
         List translations;
         for (auto tr = translationsArray.begin(); tr != translationsArray.end(); ++tr)
-            translations.push(tr.value());
+            translations.push(tr.getValue());
 
         insert(Pair(word, translations));
     }
@@ -94,7 +94,7 @@ void RBT::setColor(Node* node, const Color& color) {
         node->color_ = color;
 }
 
-Node *RBT::getRoot() const {
+Node* RBT::getRoot() const {
     return root_;
 }
 

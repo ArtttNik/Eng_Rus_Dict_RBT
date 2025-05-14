@@ -155,7 +155,7 @@ public:
     }
 };
 
-class ProgramExit : public std::exception {
+class ProgramExit final : public std::exception {
 public:
     ProgramExit() {}
     const char* what() const noexcept override { return "Program exit requested"; }

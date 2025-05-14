@@ -1,7 +1,7 @@
 #include "Tests.h"
 
 void printTestResult(const std::string & testName, bool passed) {
-    std::cout << (passed ? "[PASSED] :-D " : "[FAILED] (¬_¬ ) ")
+    std::cout << (passed ? "[PASSED] " : "[FAILED] (¬_¬ ) ")
             << testName << "\n";
 }
 
@@ -35,14 +35,13 @@ void testListConstructors() {
 }
 
 void testListPush() {
-    bool passed = true;
     List list;
     list.push("c");
     list.push("b");
     list.push("a");
 
     NodeList* head = list.getHead();
-    passed = head != nullptr &&
+    bool passed = head != nullptr &&
              head->value_ == "a" &&
              head->next_ != nullptr &&
              head->next_->value_ == "b" &&
@@ -111,9 +110,9 @@ void testPairOperators() {
     const Pair p2("banana", listB);
     const Pair p3("apple", listC);
 
-    passed &= (p1 < p2) && !(p2 < p1) &&
-            (p2 > p1) && !(p1 > p2) &&
-            (p1 == p3) && !(p1 == p2);
+    passed &= p1 < p2 && !(p2 < p1) &&
+            p2 > p1 && !(p1 > p2) &&
+            p1 == p3 && !(p1 == p2);
 
     printTestResult("Pair Operators", passed);
 }
@@ -179,7 +178,7 @@ void testRBTRemove() {
     tree.remove("apple");
     tree.remove("banana");
 
-    bool passed = tree.search(tree.getRoot(), "apple") == nullptr &&
+    const bool passed = tree.search(tree.getRoot(), "apple") == nullptr &&
                   tree.search(tree.getRoot(), "banana") == nullptr &&
                   tree.search(tree.getRoot(), "cherry") != nullptr;
 
@@ -337,6 +336,6 @@ void runAllTests() {
 
     initializeEmptyJsonFile(DATAPATH);
 
-    std::cout << "Тестирование завершено успешно!";
+    std::cout << "Тестирование завершено!\n\n";
     exit(EXIT_SUCCESS);
 }
