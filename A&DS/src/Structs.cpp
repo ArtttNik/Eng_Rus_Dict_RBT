@@ -8,11 +8,7 @@ NodeList::NodeList(const std::string& value) {
     if (value.empty())
         throw EmptyValueInNode();
 
-    try {
-        value_ = value;
-    } catch (const std::bad_alloc&) {
-        throw FailOfMemoryAllocation("NodeList");
-    }
+    value_ = value;
     next_ = nullptr;
 }
 

@@ -1,7 +1,9 @@
 #include "headers/Dict.h"
 #include "headers/Exceptions.h"
 #include "tests/Tests.h"
+
 #include <iostream>
+#include <windows.h>
 
 void runProgram();
 void runForUser();
@@ -11,7 +13,7 @@ int main() {
     SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
 
-    DATAPATH = R"(..\data\DictionaryT.json)";
+    DATAPATH = R"(..\data\Dictionary1.json)";
 
     runProgram();
 

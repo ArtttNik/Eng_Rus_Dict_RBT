@@ -1,8 +1,8 @@
 #include "../headers/MyJson.h"
 
 void MyJson::skipWhitespace(const std::string& text, size_t& pos) {
-    while (pos < text.size() && (text[pos] == ' ' || text[pos]
-        == '\n' || text[pos] == '\t' || text[pos] == '\r')) {
+    while (pos < text.size() && (text[pos] == ' ' || text[pos] == '\n'
+        || text[pos] == '\t' || text[pos] == '\r')) {
         ++pos;
     }
 }
@@ -46,26 +46,6 @@ MyJson::Entry::Entry() {
 
 MyJson::Entry::~Entry() {
     delete[] translations;
-}
-
-MyJson::Entry::Entry(const Entry& other) {
-    key = other.key;
-    translationsCount = other.translationsCount;
-    translations = new std::string[32];
-    for (size_t i = 0; i < translationsCount; ++i)
-        translations[i] = other.translations[i];
-}
-
-MyJson::Entry& MyJson::Entry::operator=(const Entry& other) {
-    if (this != &other) {
-        delete[] translations;
-        key = other.key;
-        translationsCount = other.translationsCount;
-        translations = new std::string[32];
-        for (size_t i = 0; i < translationsCount; ++i)
-            translations[i] = other.translations[i];
-    }
-    return *this;
 }
 
 MyJson::MyJson() : size_(0), capacity_(4) {

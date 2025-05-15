@@ -26,7 +26,6 @@ public:
     void addTranslation(const std::string& word, const std::string& newTranslation);
     void removeTranslation(const std::string& word, const std::string& translation);
     List& findTranslationByWord(const std::string& word) const;
-    static void printWordWithTranslations(const std::string& word, const List& translations);
     std::string findWordByTranslation(const std::string& translation) const;
     static Node* findInTreeByTranslation(Node* node, const std::string& translation);
     std::string autotranslate(std::string& input) const;

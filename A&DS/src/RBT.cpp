@@ -204,57 +204,57 @@ void RBT::fixRemove(Node* current, Node* parentNode) {
             break;
 
         const bool isLeftChild = current == parentNode->left_ || current == nullptr && parentNode->left_ == nullptr;
-        Node* sibling = isLeftChild ? parentNode->right_ : parentNode->left_;
+        Node* brother = isLeftChild ? parentNode->right_ : parentNode->left_;
 
-        if (sibling == nullptr)
+        if (brother == nullptr)
             break;
 
-        if (getColor(sibling) == RED) {
-            setColor(sibling, BLACK);
+        if (getColor(brother) == RED) {
+            setColor(brother, BLACK);
             setColor(parentNode, RED);
             if (isLeftChild)
                 rotateLeft(parentNode);
             else
                 rotateRight(parentNode);
-            sibling = isLeftChild ? parentNode->right_ : parentNode->left_;
+            brother = isLeftChild ? parentNode->right_ : parentNode->left_;
 
-            if (sibling == nullptr)
+            if (brother == nullptr)
                 break;
         }
 
-        const bool leftBlack = sibling->left_ == nullptr || getColor(sibling->left_) == BLACK;
-        const bool rightBlack = sibling->right_ == nullptr || getColor(sibling->right_) == BLACK;
+        const bool leftBlack = brother->left_ == nullptr || getColor(brother->left_) == BLACK;
+        const bool rightBlack = brother->right_ == nullptr || getColor(brother->right_) == BLACK;
 
         if (leftBlack && rightBlack) {
-            setColor(sibling, RED);
+            setColor(brother, RED);
             current = parentNode;
             parentNode = current->parent_;
         } else {
             if (isLeftChild) {
-                if (sibling->right_ == nullptr || getColor(sibling->right_) == BLACK) {
-                    if (sibling->left_ != nullptr)
-                        setColor(sibling->left_, BLACK);
-                    setColor(sibling, RED);
-                    rotateRight(sibling);
-                    sibling = parentNode->right_;
+                if (brother->right_ == nullptr || getColor(brother->right_) == BLACK) {
+                    if (brother->left_ != nullptr)
+                        setColor(brother->left_, BLACK);
+                    setColor(brother, RED);
+                    rotateRight(brother);
+                    brother = parentNode->right_;
                 }
-                setColor(sibling, getColor(parentNode));
+                setColor(brother, getColor(parentNode));
                 setColor(parentNode, BLACK);
-                if (sibling->right_ != nullptr)
-                    setColor(sibling->right_, BLACK);
+                if (brother->right_ != nullptr)
+                    setColor(brother->right_, BLACK);
                 rotateLeft(parentNode);
             } else {
-                if (sibling->left_ == nullptr || getColor(sibling->left_) == BLACK) {
-                    if (sibling->right_ != nullptr)
-                        setColor(sibling->right_, BLACK);
-                    setColor(sibling, RED);
-                    rotateLeft(sibling);
-                    sibling = parentNode->left_;
+                if (brother->left_ == nullptr || getColor(brother->left_) == BLACK) {
+                    if (brother->right_ != nullptr)
+                        setColor(brother->right_, BLACK);
+                    setColor(brother, RED);
+                    rotateLeft(brother);
+                    brother = parentNode->left_;
                 }
-                setColor(sibling, getColor(parentNode));
+                setColor(brother, getColor(parentNode));
                 setColor(parentNode, BLACK);
-                if (sibling->left_ != nullptr)
-                    setColor(sibling->left_, BLACK);
+                if (brother->left_ != nullptr)
+                    setColor(brother->left_, BLACK);
                 rotateRight(parentNode);
             }
             current = root_;
@@ -322,7 +322,6 @@ void RBT::insert(const Pair& value) {
     fixInsert(newNode);
 }
 
-
 void RBT::transplant(Node* nodeToReplace, Node* replacementNode) {
     if (nodeToReplace->parent_ == nullptr)
         root_ = replacementNode;
@@ -347,23 +346,23 @@ void RBT::remove(const std::string& word) {
         return;
 
     Node* replacementNode = nodeToDelete;
-    Node* replacementChild = nullptr;
-    Node* replacementChildParent = nullptr;
+    Node* child = nullptr;
+    Node* parent = nullptr;
     Color originalColor = replacementNode->color_;
 
     if (nodeToDelete->left_ == nullptr) {
-        replacementChild = nodeToDelete->right_;
-        replacementChildParent = nodeToDelete->parent_;
+        child = nodeToDelete->right_;
+        parent = nodeToDelete->parent_;
         transplant(nodeToDelete, nodeToDelete->right_);
     } else if (nodeToDelete->right_ == nullptr) {
-        replacementChild = nodeToDelete->left_;
-        replacementChildParent = nodeToDelete->parent_;
+        child = nodeToDelete->left_;
+        parent = nodeToDelete->parent_;
         transplant(nodeToDelete, nodeToDelete->left_);
     } else {
         replacementNode = findMaximum(nodeToDelete->left_);
         originalColor = replacementNode->color_;
-        replacementChild = replacementNode->left_;
-        replacementChildParent = replacementNode;
+        child = replacementNode->left_;
+        parent = replacementNode;
 
         if (replacementNode->parent_ != nodeToDelete) {
             transplant(replacementNode, replacementNode->left_);
@@ -381,7 +380,7 @@ void RBT::remove(const std::string& word) {
     delete nodeToDelete;
 
     if (originalColor == BLACK)
-        fixRemove(replacementChild, replacementChildParent);
+        fixRemove(child, parent);
 }
 
 std::string RBT::makeTreeToString() const {
@@ -390,8 +389,7 @@ std::string RBT::makeTreeToString() const {
     return result;
 }
 
-void RBT::makeTreeToStringRecursive(const Node* node, const std::string& prefix, const bool isTail,
-                                    std::string& result) {
+void RBT::makeTreeToStringRecursive(const Node* node, const std::string& prefix, const bool isTail, std::string& result) {
     if (node == nullptr)
         return;
 

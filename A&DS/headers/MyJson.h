@@ -37,10 +37,6 @@ public:
 
         Entry();
         ~Entry();
-
-        Entry(const Entry& other);
-
-        Entry& operator=(const Entry& other);
     };
 
     MyJson();

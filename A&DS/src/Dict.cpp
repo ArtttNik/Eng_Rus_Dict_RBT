@@ -240,11 +240,6 @@ List& Dict::findTranslationByWord(const std::string& word) const {
     return node->data_.translation_;
 }
 
-void Dict::printWordWithTranslations(const std::string& word, const List& translations) {
-    std::cout << "\nСлово: " << word << "\n";
-    std::cout << "Переводы: " << translations.convertTranslationsToString() << "\n\n";
-}
-
 std::string Dict::findWordByTranslation(const std::string& translation) const {
     Node* result = findInTreeByTranslation(tree_.getRoot(), translation);
     if (!result)

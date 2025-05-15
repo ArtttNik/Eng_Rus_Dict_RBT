@@ -2,7 +2,6 @@
 #define RBT_H
 
 #include <fstream>
-#include <windows.h>
 #include <string>
 #include <iostream>
 
