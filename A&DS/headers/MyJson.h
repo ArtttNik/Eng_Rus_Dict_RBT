@@ -3,6 +3,8 @@
 
 #include <string>
 
+constexpr size_t MAXIMUM_TRANSLATIONS = 32;
+
 class MyJsonArrayIterator {
 public:
     MyJsonArrayIterator(const std::string* data, size_t index);

@@ -387,14 +387,14 @@ void Dict::run()
 
             runRecursive();
         }
-        catch (const std::logic_error& e)
+        catch (const std::logic_error& error)
         {
-            std::cout << e.what() << "\n";
+            std::cout << error.what() << "\n";
             runRecursive();
         }
-        catch (const std::runtime_error& e)
+        catch (const std::runtime_error& error)
         {
-            std::cerr << e.what() << "\n";
+            std::cerr << error.what() << "\n";
         }
     };
     runRecursive();
@@ -402,11 +402,11 @@ void Dict::run()
 
 bool Dict::isEnglishWord(const std::string& word) {
     return std::all_of(word.begin(), word.end(),
-                       [](const unsigned char c) {
-                           return (c >= 'A' && c <= 'Z') ||
-                                  (c >= 'a' && c <= 'z') ||
-                                  c == '\'' || c == '-' ||
-                                  c == ',' || c == ' ';
+                       [](const unsigned char ch) {
+                           return (ch >= 'A' && ch <= 'Z') ||
+                                  (ch >= 'a' && ch <= 'z') ||
+                                  ch == '\'' || ch == '-' ||
+                                  ch == ',' || ch == ' ';
                        });
 }
 
@@ -417,17 +417,17 @@ bool Dict::isRussianWord(const std::string& word) {
     std::function<bool(size_t)> checkRussian = [&](const size_t i) -> bool {
         if (i >= word.size())
             return true;
-        const unsigned char c = word[i];
+        const unsigned char ch = word[i];
 
-        if (c == ' ' || c == ',')
+        if (ch == ' ' || ch == ',')
             return checkRussian(i + 1);
 
-        if ((c == 0xD0 || c == 0xD1) && i + 1 < word.size()) {
+        if ((ch == 0xD0 || ch == 0xD1) && i + 1 < word.size()) {
             const unsigned char next = word[i + 1];
-            const bool isRussian = (c == 0xD0 && next >= 0x90 && next <= 0xBF) ||
-                             (c == 0xD1 && next >= 0x80 && next <= 0x8F) ||
-                             (c == 0xD0 && next == 0x81) ||
-                             (c == 0xD1 && next == 0x91);
+            const bool isRussian = (ch == 0xD0 && next >= 0x90 && next <= 0xBF) ||
+                             (ch == 0xD1 && next >= 0x80 && next <= 0x8F) ||
+                             (ch == 0xD0 && next == 0x81) ||
+                             (ch == 0xD1 && next == 0x91);
             return isRussian ? checkRussian(i + 2) : false;
         }
         return false;

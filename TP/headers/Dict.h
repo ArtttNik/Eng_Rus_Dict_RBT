@@ -40,4 +40,6 @@ private:
     static void trimSpaces(std::string& str);
 };
 
+void runTests();
+
 #endif // DICT_H

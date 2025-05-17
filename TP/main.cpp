@@ -1,9 +1,8 @@
 #include "headers/Dict.h"
-#include "headers/Exceptions.h"
 #include <iostream>
 #include <windows.h>
 
-void runTests();
+
 const std::string DATAPATH = "../data/DictionaryT.json";
 
 int main() {

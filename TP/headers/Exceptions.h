@@ -56,9 +56,9 @@ public:
     }
 };
 
-class ErrorInFile final : public std::logic_error {
+class ErrorInFile final : public std::runtime_error {
 public:
-    ErrorInFile() : std::logic_error("ERROR: something went wrong with file\n") {
+    ErrorInFile() : std::runtime_error("ERROR: something went wrong with file\n") {
     }
 };
 

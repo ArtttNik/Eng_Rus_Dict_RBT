@@ -40,7 +40,7 @@ MyJsonArray::MyJsonArray(const std::string* data, size_t size)
     : data_(data), size_(size) {}
 
 MyJson::Entry::Entry() {
-    translations = new std::string[32];
+    translations = new std::string[MAXIMUM_TRANSLATIONS];
     translationsCount = 0;
 }
 
@@ -103,7 +103,7 @@ void MyJson::parse(const std::string& text) {
             }
 
             std::string translation = parseString(text, pos);
-            if (entries_[size_].translationsCount < 32)
+            if (entries_[size_].translationsCount < MAXIMUM_TRANSLATIONS)
                 entries_[size_].translations[entries_[size_].translationsCount++] = translation;
 
             skipWhitespace(text, pos);
