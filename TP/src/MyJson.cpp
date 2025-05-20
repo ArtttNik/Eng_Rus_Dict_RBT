@@ -1,6 +1,7 @@
 #include "../headers/MyJson.h"
 #include <algorithm>
 #include <sstream>
+#include <iostream>
 
 void MyJson::skipWhitespace(const std::string& text, size_t& pos) {
     if (pos >= text.size() || !isspace(text[pos]))
@@ -10,13 +11,14 @@ void MyJson::skipWhitespace(const std::string& text, size_t& pos) {
 }
 
 std::string MyJson::parseString(const std::string& text, size_t& pos) {
-    if (text[pos] != '"')
-        return "";
+    if (pos >= text.size() || text[pos] != '"') {
+        throw ErrorInFile();
+    }
 
-    const auto start = text.begin() + pos + 1;
-    const auto end = text.end();
     std::string result;
     bool escape = false;
+    const auto start = text.begin() + pos + 1;
+    const auto end = text.end();
 
     const auto it = std::find_if(start, end, [&](const char c) {
         if (escape) {
@@ -35,15 +37,24 @@ std::string MyJson::parseString(const std::string& text, size_t& pos) {
         return false;
     });
 
+    if (it == end) {
+        pos = text.size();
+        throw ErrorInFile();
+    }
+
     pos = std::distance(text.begin(), it) + 1;
+
+    if (result.empty() && pos - (std::distance(text.begin(), it) == 1))
+        throw ErrorInFile();
+
     return result;
 }
 
-MyJson::Translations MyJson::parseArray(const std::string& text, size_t& pos) {
-    Translations result;
+std::vector<std::string> MyJson::parseArray(const std::string& text, size_t& pos) {
+    std::vector<std::string> result;
 
     skipWhitespace(text, pos);
-    if (text[pos] != '[')
+    if (pos >= text.size() || text[pos] != '[')
         return result;
     ++pos;
 
@@ -76,7 +87,7 @@ void MyJson::parse(const std::string& text, std::map<std::string, std::list<std:
 
     skipWhitespace(text, pos);
     if (text[pos] != '{')
-        return;
+        throw ErrorInFile();
     ++pos;
 
     auto parseNext = [&](auto& self) -> void {
@@ -89,14 +100,14 @@ void MyJson::parse(const std::string& text, std::map<std::string, std::list<std:
 
         std::string key = parseString(text, pos);
         if (key.empty())
-            return;
+            throw ErrorInFile();
 
         skipWhitespace(text, pos);
         if (text[pos] != ':')
-            return;
+            throw ErrorInFile();
         ++pos;
 
-        Translations translations = parseArray(text, pos);
+        std::vector<std::string> translations = parseArray(text, pos);
         if (!translations.empty()) {
             std::list<std::string> translationsList(translations.begin(), translations.end());
             translationsList.sort();

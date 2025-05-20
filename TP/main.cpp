@@ -2,7 +2,6 @@
 #include <iostream>
 #include <windows.h>
 
-
 const std::string DATAPATH = "../data/DictionaryT.json";
 
 int main() {
@@ -12,12 +11,12 @@ int main() {
     try {
         std::cout << "\t\tЗапуск тестов\n" << std::endl;
         runTests();
-        std::cout << "\n\t\tВсе тесты прошли!\n\n" << std::endl;
+        std::cout << "\n\t\tЗавершение тестирования!\n\n" << std::endl;
 
         Dict dictionary(DATAPATH);
         dictionary.run();
     } catch (const std::exception& error) {
-        std::cerr << "Error: " << error.what() << std::endl;
+        std::cerr << error.what() << std::endl;
         system("pause");
         return EXIT_FAILURE;
     }
