@@ -2,6 +2,8 @@
 #include <iostream>
 #include <windows.h>
 
+#include "headers/Exceptions.h"
+
 const std::string DATAPATH = "../data/DictionaryT.json";
 
 int main() {
@@ -15,13 +17,13 @@ int main() {
 
         Dict dictionary(DATAPATH);
         dictionary.run();
+    } catch (const Exit&) {
+        system("pause");
+        return EXIT_SUCCESS;
     } catch (const std::exception& error) {
         std::cerr << error.what() << std::endl;
         system("pause");
         return EXIT_FAILURE;
     }
-
-    system("pause");
-    return EXIT_SUCCESS;
 }
 

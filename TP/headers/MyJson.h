@@ -11,7 +11,7 @@
 class MyJson {
 public:
     static void parse(const std::string& text, std::map<std::string, std::list<std::string>>& dictionary);
-    static std::string convertToString(const std::map<std::string, std::list<std::string>>& dictionary);
+    static std::string convertDictToJsonString(const std::map<std::string, std::list<std::string>>& dictionary);
 
 private:
     static void skipWhitespace(const std::string& text, size_t& pos);

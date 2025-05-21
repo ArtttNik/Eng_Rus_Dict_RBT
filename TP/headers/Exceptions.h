@@ -62,5 +62,9 @@ public:
     }
 };
 
-
+class Exit final : public std::exception {
+public:
+    Exit() : std::exception() {
+    }
+};
 #endif //EXCEPTIONS_H

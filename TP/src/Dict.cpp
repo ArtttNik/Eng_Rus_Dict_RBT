@@ -34,7 +34,7 @@ void Dict::writeToFile() const {
     if (!fileOut)
         throw FailOfMemoryAllocation("Dictionary.json file");
 
-    fileOut << MyJson::convertToString(tree_);
+    fileOut << MyJson::convertDictToJsonString(tree_);
 }
 
 void Dict::removeFromFile(const std::string& word, const std::string* translation) {
@@ -53,7 +53,7 @@ void Dict::removeFromFile(const std::string& word, const std::string* translatio
     if (!fileOut) {
         throw FailOfMemoryAllocation("Dictionary.json file");
     }
-    fileOut << MyJson::convertToString(tree_);
+    fileOut << MyJson::convertDictToJsonString(tree_);
 }
 
 void Dict::insertSorted(std::list<std::string>& list, const std::string& value) {
@@ -62,7 +62,7 @@ void Dict::insertSorted(std::list<std::string>& list, const std::string& value) 
         list.insert(it, value);
 }
 
-void Dict::processTranslations(std::istringstream & iss, std::list<std::string> & translationsList) {
+void Dict::processTranslations(std::istringstream& iss, std::list<std::string>& translationsList) {
     std::string translation;
     if (std::getline(iss, translation, ';')) {
         trimSpaces(translation);
@@ -98,7 +98,7 @@ void Dict::insert(const std::string& word, const std::string& translationsStr) {
 
 void Dict::remove(const std::string & word) {
     if (word.empty())
-        throw InvalidWordLanguage();
+        throw EmptyValue();
 
     if (tree_.erase(word))
         removeFromFile(word);
@@ -194,7 +194,7 @@ std::string Dict::getCommandInput() {
     std::string command;
     if (!std::getline(std::cin, command)) {
         std::cout << "\nЗавершение работы. Все данные сохранены в файле\n";
-        throw std::runtime_error("");
+        throw Exit();
     }
     trimSpaces(command);
     toUpperCaseE(command);
@@ -365,6 +365,24 @@ bool Dict::isEnglishWord(const std::string& word) {
                        });
 }
 
+void Dict::toUpperCaseE(std::string& str) {
+    std::transform(str.begin(), str.end(), str.begin(),
+                   [](const unsigned char c) { return std::toupper(c); });
+}
+
+void Dict::toLowerCaseE(std::string& str) {
+    std::transform(str.begin(), str.end(), str.begin(),
+                   [](const unsigned char c) { return std::tolower(c); });
+}
+
+void Dict::trimSpaces(std::string& str) {
+    const auto first =
+        std::find_if_not(str.begin(), str.end(), [](const int c) { return std::isspace(c); });
+    const auto last =
+        std::find_if_not(str.rbegin(), str.rend(), [](const int c) { return std::isspace(c); }).base();
+    str = first < last ? std::string(first, last) : "";
+}
+
 bool Dict::isRussianWord(const std::string& word) {
     if (word.empty())
         return false;
@@ -379,34 +397,16 @@ bool Dict::isRussianWord(const std::string& word) {
 
         if ((ch == 0xD0 || ch == 0xD1) && i + 1 < word.size()) {
             const unsigned char next = word[i + 1];
-            const bool isRussian = (ch == 0xD0 && next >= 0x90 && next <= 0xBF) ||
-                             (ch == 0xD1 && next >= 0x80 && next <= 0x8F) ||
-                             (ch == 0xD0 && next == 0x81) ||
-                             (ch == 0xD1 && next == 0x91);
+            const bool isRussian = (ch == 0xD0 && next >= 0x90 && next <= 0xBF) || //А-Я, а-п
+                             (ch == 0xD1 && next >= 0x80 && next <= 0x8F) || //р-я
+                             (ch == 0xD0 && next == 0x81) || // Ё
+                             (ch == 0xD1 && next == 0x91); //ё
             return isRussian ? checkRussian(i + 2) : false;
         }
         return false;
     };
 
     return checkRussian(0);
-}
-
-void Dict::toUpperCaseE(std::string& str) {
-    std::transform(str.begin(), str.end(), str.begin(),
-                   [](const unsigned char c) { return std::toupper(c); });
-}
-
-void Dict::trimSpaces(std::string& str) {
-    const auto first =
-        std::find_if_not(str.begin(), str.end(), [](const int c) { return std::isspace(c); });
-    const auto last =
-        std::find_if_not(str.rbegin(), str.rend(), [](const int c) { return std::isspace(c); }).base();
-    str = first < last ? std::string(first, last) : "";
-}
-
-void Dict::toLowerCaseE(std::string& str) {
-    std::transform(str.begin(), str.end(), str.begin(),
-                   [](const unsigned char c) { return std::tolower(c); });
 }
 
 void Dict::toLowerCaseR(std::string& str) {

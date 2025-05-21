@@ -16,18 +16,18 @@ std::string MyJson::parseString(const std::string& text, size_t& pos) {
     }
 
     std::string result;
-    bool escape = false;
+    bool flag = false;
     const auto start = text.begin() + pos + 1;
     const auto end = text.end();
 
     const auto it = std::find_if(start, end, [&](const char c) {
-        if (escape) {
+        if (flag) {
             result += c;
-            escape = false;
+            flag = false;
             return false;
         }
         if (c == '\\') {
-            escape = true;
+            flag = true;
             return false;
         }
         if (c == '"') {
@@ -44,7 +44,7 @@ std::string MyJson::parseString(const std::string& text, size_t& pos) {
 
     pos = std::distance(text.begin(), it) + 1;
 
-    if (result.empty() && pos - (std::distance(text.begin(), it) == 1))
+    if (result.empty() && pos - std::distance(text.begin(), it) == 1)
         throw ErrorInFile();
 
     return result;
@@ -125,7 +125,7 @@ void MyJson::parse(const std::string& text, std::map<std::string, std::list<std:
     parseNext(parseNext);
 }
 
-std::string MyJson::convertToString(const std::map<std::string, std::list<std::string>>& dictionary) {
+std::string MyJson::convertDictToJsonString(const std::map<std::string, std::list<std::string>>& dictionary) {
     std::ostringstream oss;
     oss << "{";
 
@@ -139,11 +139,11 @@ std::string MyJson::convertToString(const std::map<std::string, std::list<std::s
         comma(oss);
         oss << "\n  \"" << entry.first << "\": [";
 
-        auto printTr = [first_tr = true](std::ostringstream& oss, const auto& tr) mutable {
-            if (!first_tr)
-                oss << ",";
-            first_tr = false;
-            oss << "\"" << tr << "\"";
+        auto printTr = [firstTr = true](std::ostringstream& osstr, const auto& tr) mutable {
+            if (!firstTr)
+                osstr << ",";
+            firstTr = false;
+            osstr << "\"" << tr << "\"";
         };
 
         std::for_each(entry.second.begin(), entry.second.end(),
